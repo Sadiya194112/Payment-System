@@ -28,6 +28,12 @@ def get_tokens_for_user(user):
         'refresh': str(refresh),
         'access': str(refresh.access_token),
     }
+    
+
+class RootView(View):
+    def get(self, request):
+        return JsonResponse({"message": "Welcome to the Chatbot API!"})
+
 
 class RegistrationView(APIView):
     def post(self, request):
