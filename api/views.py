@@ -82,24 +82,24 @@ class ProductListAPI(APIView):
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
 
-class CheckoutView(APIView):
+class CheckoutAPI(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     
     def get(self, request, product_id):
         product = get_object_or_404(Product, id=product_id)
-        
-        return render(request, "api/checkout.html", {'product': product})
+        serializer = ProductSerializer(product)
+        return Response(serializer.data)
 
 
-@method_decorator(csrf_exempt, name='dispatch')
-class CreatePaymentView(LoginRequiredMixin, View):
+class CreatePaymentAPI(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
     def post(self, request, product_id):
-        # YOUR_DOMAIN =  settings.YOUR_DOMAIN
+        YOUR_DOMAIN =  settings.YOUR_DOMAIN
+
         product = get_object_or_404(Product, id=product_id)
         order = Order.objects.create(user=request.user, product=product, amount=product.price)
         checkout_session = stripe.checkout.Session.create(
@@ -109,17 +109,17 @@ class CreatePaymentView(LoginRequiredMixin, View):
             ],
             mode='subscription',
             customer_email = request.user.email,
-            # success_url=f'{YOUR_DOMAIN}/api/payment/success/',
-            # cancel_url=f'{YOUR_DOMAIN}/api/payment/cancel/',
             
-            success_url='http://localhost:8001/api/success/',
-            cancel_url='http://localhost:8001/api/cancel/',
+            success_url=f'{YOUR_DOMAIN}/success/',
+            cancel_url=f'{YOUR_DOMAIN}/cancel/',
+            
+            # success_url='http://localhost:8001/api/success/',
+            # cancel_url='http://localhost:8001/api/cancel/',
         )
         order.stripe_checkout_session_id = checkout_session.id
         order.save()
-        
-        return redirect(checkout_session.url, code=303)
 
+        return Response({'checkout_url': checkout_session.url})
 
 
 
