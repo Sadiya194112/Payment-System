@@ -1,5 +1,6 @@
 import stripe
 from .models import *
+from .serializers import *
 from django.views import View
 from django.http import JsonResponse
 from django.conf import settings
@@ -15,7 +16,6 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .serializers import RegistrationSerializer, UserLoginSerializer, UserProfileSerializer
 
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -49,7 +49,6 @@ class RegistrationView(APIView):
 
 
 class LoginView(APIView):
-    authentication_classes =[JWTAuthentication]
     
     def post(self, request):
         serializer = UserLoginSerializer(data=request.data)
@@ -77,19 +76,27 @@ class UserProfileView(APIView):
         serializer = UserProfileSerializer(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)    
 
-class ProductListView(View):
+class ProductListAPI(APIView):
     def get(self, request):
         products = Product.objects.all()
-        return render(request, 'api/product_list.html', {'products': products})
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)
 
-class CheckoutView(LoginRequiredMixin, View):
+class CheckoutView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
     def get(self, request, product_id):
         product = get_object_or_404(Product, id=product_id)
+        
         return render(request, "api/checkout.html", {'product': product})
 
 
 @method_decorator(csrf_exempt, name='dispatch')
 class CreatePaymentView(LoginRequiredMixin, View):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
 
     def post(self, request, product_id):
         # YOUR_DOMAIN =  settings.YOUR_DOMAIN
