@@ -13,9 +13,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-%2l-=w)_!q@8uvr_&j(^e-bc(#mx0^mytl^%qeuftampui51lu'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['irin.space', 'www.irin.space']
+ALLOWED_HOSTS = ['irin.space', 'www.irin.space', '127.0.0.1']
 
 
 # Application definition
@@ -137,7 +137,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # YOUR_DOMAIN =  "http://irin.space/"
 YOUR_DOMAIN =  "http://localhost:8001/"
-
+LOGIN_URL = "/authentication/login/"
 
 
 from decouple import config
