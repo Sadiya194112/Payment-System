@@ -137,7 +137,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # YOUR_DOMAIN =  "http://irin.space/"
 YOUR_DOMAIN =  "http://localhost:8001/"
-LOGIN_URL = "/authentication/login/"
+# LOGIN_URL = "/authentication/login/"
 
 
 from decouple import config
