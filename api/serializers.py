@@ -1,4 +1,4 @@
-from .models import UserProfile
+from .models import *
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
@@ -36,4 +36,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    pass
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'description', 'price', 'stock']
