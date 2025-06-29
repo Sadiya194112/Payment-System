@@ -10,7 +10,7 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ("name", "price", "stock")
+    list_display = ("id", "name", "price", "stock")
     search_fields = ("name",)
     list_filter = ("price",)
 
